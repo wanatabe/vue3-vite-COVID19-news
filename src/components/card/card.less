@@ -1,0 +1,28 @@
+// @import 'src/style/var.less';
+
+@card-defaultSize: 22px;
+
+.card {
+  background-color: #f1e5de;
+  font-weight: bold;
+  position: relative;
+  border-radius: 4px;
+  .subText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: @card-defaultSize;
+    line-height: 1.5;
+    white-space: nowrap;
+
+    p:first-child {
+      font-size: @card-defaultSize * 1.5;
+    }
+  }
+  &::before {
+    display: block;
+    content: '';
+    padding-bottom: 100%;
+  }
+}

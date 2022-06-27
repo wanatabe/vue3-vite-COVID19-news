@@ -1,0 +1,18 @@
+@import 'src/style/var.less';
+
+.defaultButton {
+  width: auto;
+  background-color: @defaultBlue;
+  color: #fff;
+  font-size: 16px;
+  border-radius: @defaultRadius;
+  height: 30px;
+  line-height: 30px;
+  text-align: 'center';
+  letter-spacing: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten(@defaultBlue, 10%);
+  }
+}
