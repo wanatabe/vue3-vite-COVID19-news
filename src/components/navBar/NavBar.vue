@@ -22,6 +22,9 @@ export default navDefineComponent
   font-size: 22px;
   margin-bottom: 24px;
   box-shadow: 1px 0 10px 0px #ccc;
+  position: sticky;
+  top: 0;
+  z-index: 99;
 
   /*包含以下四种的链接*/
   a {

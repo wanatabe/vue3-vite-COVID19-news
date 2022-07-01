@@ -29,20 +29,20 @@ export function getTreeNode(name: string, treeData: TreeType): any {
   }
 }
 
-export function getCityAllData(name: string, treeData: TreeType) {
+export function getCityAllData(name: string, treeData: TreeType, isToday = true) {
   const data = getTreeNode(name, treeData)
   if (!data.children) return
   let confirm = []
   for (let index = 0; index < data.children.length; index++) {
     const item = data.children[index]
-    let { name, adcode, today } = item
+    let { name, adcode, today, total } = item
     if (!adcode) {
       const values = Object.values(cityAdCode)
       name = values.find((pre) => pre.includes(name))
     }
     confirm.push({
       name: adcode ? cityAdCode[adcode as CityAdCode] : name,
-      value: today.confirm
+      value: isToday ? today.confirm : total.nowConfirm
     })
   }
   return confirm

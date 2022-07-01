@@ -23,7 +23,7 @@ export interface HomeState {
   // 城市速报 激活的tab
   briefingtab: baseType
   briefingOption: InitConfigType
-  // briefingEchartData?: Array<baseType>
+  mapTab?: boolean
   mapOption?: any
   mapConfig?: any
 }

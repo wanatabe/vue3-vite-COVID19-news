@@ -68,6 +68,10 @@
     </div>
     <div class="mapEchart">
       <h2>全国疫情分布（含港澳台）</h2>
+      <div class="trendTabs">
+        <div :class="['trendTab', mapTab && 'activeTrendTab']" @click="changeMapTab()">新增确诊</div>
+        <div :class="['trendTab', !mapTab && 'activeTrendTab']" @click="changeMapTab(false)">现有确诊</div>
+      </div>
       <VEchart :option="mapOption" :mapConfig="mapConfig" height="500px" />
     </div>
   </div>
@@ -77,10 +81,10 @@
 import { getMapOption, getOptionValue, lineOption } from 'pkg/echarts/echartUtil'
 import { baseType } from '@/appType'
 import { connection } from 'tool/axios'
-import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
+import { defineComponent, nextTick, onMounted, reactive, toRefs, watch } from 'vue'
 import { HomeState } from './HomeType'
 import geoJson from '@/components/echarts/chinaGeoJson'
-import { getCityAllData, getTreeNode, TreeType } from '@/utils/tree'
+import { getCityAllData, TreeType } from '@/utils/tree'
 
 export default defineComponent({
   name: 'Home',
@@ -127,7 +131,8 @@ export default defineComponent({
       mapConfig: {
         map: 'china',
         geoJson: geoJson
-      }
+      },
+      mapTab: true
     })
 
     let trendData: baseType
@@ -147,32 +152,45 @@ export default defineComponent({
 
       treeData = localData.data.diseaseh5Shelf.areaTree
 
-      const treenode = getCityAllData('中国', treeData)
-      const mapOption = getMapOption('china', treenode)
-      state.mapOption.option = mapOption
-      console.log('state.mapOption :>> ', state.mapOption)
-
       // 初始化渲染 今日疫情card
       handleTodayData(localData.data.diseaseh5Shelf.chinaTotal)
       // 初始化渲染 31省市速报
       handleBriefing(localData.data.localCityNCOVDataList)
       // 初始化渲染 趋势图
       state.activeTrend && changeTrendTab(state.activeTrend)
-
       state.briefingtab && changeBriefingTab(state.briefingtab)
+      renderMap()
     })
 
     watch(
-      [() => state.limitTrend, () => state.activeBriefing],
-      async ([newData, newCity], [oldData, oldCity]) => {
+      [() => state.limitTrend, () => state.activeBriefing, () => state.mapTab],
+      async ([newData, newCity, newMapTab], [oldData, oldCity, oldMapTab]) => {
+        // 监听趋势查询范围变化
         if (newData !== oldData) {
           newData && (await queryTrend(newData.key))
           state.activeTrend && changeTrendTab(state.activeTrend)
         }
 
+        // 监听 速报表格切换城市
         if (newCity !== oldCity) {
           newCity && (await queryCityBriefing(newCity.adcode))
           state.briefingtab && changeBriefingTab(state.briefingtab)
+        }
+
+        // 监听 地图tab变化
+        if (newMapTab !== oldMapTab) {
+          /**
+           * @todo
+           * 期望： mapTab（地图控制按钮）变化后按钮的样式立刻渲染后，再触发map的渲染事件
+           * 问题： 为什么使用nextTick无法实现目标？即使我把它放到mapTab的change事件中。比如在react中可以使用setState的第二个参数
+           * 此处使用了setTimeout开启宏任务来解决，请问vue中有什么更优雅的方式？
+           */
+          setTimeout(() => {
+            renderMap(newMapTab)
+          })
+          // await nextTick(function () {
+          //   renderMap(newMapTab)
+          // })
         }
       },
       {
@@ -272,12 +290,25 @@ export default defineComponent({
       briefingEchartData = res.data
     }
 
+    const changeMapTab = (isToday = true) => {
+      state.mapTab = isToday
+    }
+
+    const renderMap = (isToday = true) => {
+      // 渲染map echarts
+      const treenode = getCityAllData('中国', treeData, isToday)
+      const mapOption = getMapOption('china', treenode)
+      state.mapOption = { option: mapOption }
+      console.log('state.mapOption :>> ', state.mapOption)
+    }
+
     return {
       ...toRefs(state),
       changeTrendTab,
       handleChange,
       changeBriefing,
-      changeBriefingTab
+      changeBriefingTab,
+      changeMapTab
     }
   }
 })
@@ -376,6 +407,12 @@ export default defineComponent({
       padding-top: 18px;
       padding-bottom: 18px;
     }
+  }
+}
+.mapEchart {
+  .trendTabs {
+    justify-content: start;
+    margin: 16px 0;
   }
 }
 </style>

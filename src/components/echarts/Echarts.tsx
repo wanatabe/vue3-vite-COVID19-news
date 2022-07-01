@@ -37,17 +37,16 @@ const echart = defineComponent({
       if (!echart || !echart.value) return console.error('echart未实例')
       let { option, notMerge, lazyUpdate } = config || {}
       if (!option) return console.error('option为空：', option)
-      if (props.mapConfig) {
-        const { map, geoJson, specialAreas } = props.mapConfig
-        echarts.registerMap(map, geoJson, specialAreas)
-      }
-
       echart.value.setOption(option, notMerge, lazyUpdate)
     }
 
     onMounted(() => {
       if (!echartRef.value) return console.error('echarts根节点容器不存在')
       echart.value = echarts.init(echartRef.value, undefined, { renderer: props.mapConfig ? 'canvas' : 'svg' })
+      if (props.mapConfig) {
+        const { map, geoJson, specialAreas } = props.mapConfig
+        echarts.registerMap(map, geoJson, specialAreas)
+      }
       init(props.option)
     })
 
