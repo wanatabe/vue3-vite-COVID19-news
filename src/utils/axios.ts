@@ -15,7 +15,7 @@ export type RequestConfig = AxiosRequestConfig & baseType
 // 添加请求拦截器
 instance.interceptors.request.use(
   function (config: RequestConfig) {
-    console.log('config :>> ', config)
+    // console.log('config :>> ', config)
     if (config.reqeustBase === 'private') {
       config.baseURL = me_baseURL
       const token = config.headers?.token || getLocal('token')
@@ -24,7 +24,7 @@ instance.interceptors.request.use(
         return Promise.reject({ msg: '未登录' })
       }
     }
-    console.log('header------', config)
+    // console.log('header------', config)
     return config
   },
   function (error) {
@@ -47,7 +47,6 @@ instance.interceptors.response.use(
 
 // instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 instance.defaults.headers.common['Host'] = 'api.inews.qq.com'
-// instance.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
 
 export async function connection<T extends baseType>(url: string, method: Method, config?: RequestConfig): Promise<T> {
   if (!config) {

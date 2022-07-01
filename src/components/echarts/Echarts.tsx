@@ -6,12 +6,19 @@ const echartProps = {
   option: Object as PropType<InitConfigType>,
   class: String,
   height: String,
-  width: String
+  width: String,
+  mapConfig: Object as PropType<MapConfig>
 }
 export interface InitConfigType {
   option: echarts.EChartsOption
   notMerge?: boolean
   lazyUpdate?: boolean
+}
+
+export interface MapConfig {
+  map: string
+  geoJson: any
+  specialAreas?: any
 }
 
 const echart = defineComponent({
@@ -30,12 +37,17 @@ const echart = defineComponent({
       if (!echart || !echart.value) return console.error('echart未实例')
       let { option, notMerge, lazyUpdate } = config || {}
       if (!option) return console.error('option为空：', option)
+      if (props.mapConfig) {
+        const { map, geoJson, specialAreas } = props.mapConfig
+        echarts.registerMap(map, geoJson, specialAreas)
+      }
+
       echart.value.setOption(option, notMerge, lazyUpdate)
     }
 
     onMounted(() => {
       if (!echartRef.value) return console.error('echarts根节点容器不存在')
-      echart.value = echarts.init(echartRef.value, undefined, { renderer: 'svg' })
+      echart.value = echarts.init(echartRef.value, undefined, { renderer: props.mapConfig ? 'canvas' : 'svg' })
       init(props.option)
     })
 

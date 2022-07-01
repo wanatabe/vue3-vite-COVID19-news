@@ -5,7 +5,7 @@
     </div>
     <div class="trend">
       <div class="trendTitle">
-        <span class="title">{{ `全国${activeTrend && activeTrend.value}趋势图` }}</span>
+        <h2>{{ `全国${activeTrend && activeTrend.value}趋势图` }}</h2>
         <a-select @change="handleChange" class="antdSelect" :default-value="limitTrend && limitTrend.value">
           <a-select-option v-for="item in limitTrends" :key="item.key" :value="item.key">
             {{ item.value }}
@@ -19,20 +19,68 @@
           v-for="item in trendTabs"
           :key="item.key"
           @click="changeTrendTab(item)"
+          :style="{ width: trendTabs && 100 / trendTabs.length + '%' }"
         >
-          {{ item.value }}
+          {{ item.value.substring(0, 2) }}<br />{{ item.value.slice(2) }}
         </div>
       </div>
+    </div>
+    <div class="briefing">
+      <h2>国内31省市区本土疫情速报</h2>
+      <table>
+        <thead>
+          <tr>
+            <th width="30%" :style="{ backgroundColor: '#f5f5f5' }">地区</th>
+            <th width="15%" :style="{ backgroundColor: 'linen', color: '#ff7140' }">本土<br />确诊</th>
+            <th width="15%" :style="{ backgroundColor: '#fef7ff', color: '#ca3f81' }">本土<br />无症状</th>
+            <th width="20%" :style="{ backgroundColor: '#fff7f7', color: '#f23a3b' }">风险地区<br />高|中</th>
+            <th width="20%" :style="{ backgroundColor: '#fffaf7' }">更新<br />时间</th>
+          </tr>
+        </thead>
+        <tbody v-for="item in briefingList" :key="item.id">
+          <tr @click="changeBriefing(item)" :class="activeBriefing && activeBriefing.adcode === item.adcode && 'activeBriefing'">
+            <th>{{ `${item.province}  ${item.city}` }}</th>
+            <th>+{{ item['local_confirm_add'] }}</th>
+            <th>+{{ item['local_wzz_add'] }}</th>
+            <th>{{ `${item['highRiskAreaNum']} | ${item['mediumRiskAreaNum']}` }}</th>
+            <th>{{ item.mtime }}</th>
+          </tr>
+          <tr>
+            <th class="briefingEchart" v-if="activeBriefing && activeBriefing.adcode === item.adcode" colspan="5">
+              <h2>{{ `${item.province}${briefingtab.value}` }}</h2>
+
+              <VEchart :option="briefingOption" height="300px" />
+              <div class="trendTabs">
+                <div
+                  :class="['trendTab', briefingtab && briefingtab.key === item.key && 'activeTrendTab']"
+                  v-for="item in briefingTabs"
+                  :key="item.key"
+                  @click="changeBriefingTab(item)"
+                  :style="{ width: 100 / briefingTabs.length + '%' }"
+                >
+                  {{ item.value.substring(0, 2) }}<br />{{ item.value.slice(2) }}
+                </div>
+              </div>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mapEchart">
+      <h2>全国疫情分布（含港澳台）</h2>
+      <VEchart :option="mapOption" :mapConfig="mapConfig" height="500px" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { getOptionValue, lineOption } from 'pkg/echarts/echartUtil'
+import { getMapOption, getOptionValue, lineOption } from 'pkg/echarts/echartUtil'
 import { baseType } from '@/appType'
 import { connection } from 'tool/axios'
 import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
 import { HomeState } from './HomeType'
+import geoJson from '@/components/echarts/chinaGeoJson'
+import { getCityAllData, getTreeNode, TreeType } from '@/utils/tree'
 
 export default defineComponent({
   name: 'Home',
@@ -64,9 +112,27 @@ export default defineComponent({
         { key: 365, value: '近一年' }
       ],
       limitTrend: { key: 30, value: '近30天' },
-      trendOption: { option: {} }
+      trendOption: { option: {} },
+      briefingList: [],
+      activeBriefing: {},
+      briefingTabs: [
+        { key: 'yes_confirm_add', value: '新增本土确诊', remark: ['confirm_add'] },
+        { key: 'yes_wzz_add', value: '新增本土无症状', remark: ['wzz_add'] }
+      ],
+      briefingtab: { key: 'yes_confirm_add', value: '新增本土确诊', remark: ['confirm_add'] },
+      briefingOption: { option: {} },
+      mapOption: {
+        option: {}
+      },
+      mapConfig: {
+        map: 'china',
+        geoJson: geoJson
+      }
     })
+
     let trendData: baseType
+    let briefingEchartData: Array<baseType>
+    let treeData: Array<TreeType>
 
     onMounted(async () => {
       // 初始化数据请求
@@ -78,21 +144,36 @@ export default defineComponent({
         }),
         state.limitTrend && queryTrend(state.limitTrend.key)
       ])
+
+      treeData = localData.data.diseaseh5Shelf.areaTree
+
+      const treenode = getCityAllData('中国', treeData)
+      const mapOption = getMapOption('china', treenode)
+      state.mapOption.option = mapOption
+      console.log('state.mapOption :>> ', state.mapOption)
+
       // 初始化渲染 今日疫情card
-      handalTodayData(localData.data.diseaseh5Shelf.chinaTotal)
+      handleTodayData(localData.data.diseaseh5Shelf.chinaTotal)
+      // 初始化渲染 31省市速报
+      handleBriefing(localData.data.localCityNCOVDataList)
       // 初始化渲染 趋势图
       state.activeTrend && changeTrendTab(state.activeTrend)
+
+      state.briefingtab && changeBriefingTab(state.briefingtab)
     })
 
     watch(
-      [() => state.limitTrend, () => state.cardList],
-      async ([newData, newCard], [oldData, oldCard]) => {
+      [() => state.limitTrend, () => state.activeBriefing],
+      async ([newData, newCity], [oldData, oldCity]) => {
         if (newData !== oldData) {
           newData && (await queryTrend(newData.key))
           state.activeTrend && changeTrendTab(state.activeTrend)
         }
-        console.log('newData :>> ', newData, oldData)
-        console.log('newData :>> ', newCard, oldCard)
+
+        if (newCity !== oldCity) {
+          newCity && (await queryCityBriefing(newCity.adcode))
+          state.briefingtab && changeBriefingTab(state.briefingtab)
+        }
       },
       {
         deep: true
@@ -103,7 +184,7 @@ export default defineComponent({
      * 今日疫情数据总览
      * @param data
      */
-    const handalTodayData = (data: baseType) => {
+    const handleTodayData = (data: baseType) => {
       const { cardList = [] } = state
       for (let index = 0; index < cardList.length; index++) {
         const item = cardList[index]
@@ -111,6 +192,15 @@ export default defineComponent({
       }
       state.cardList = cardList
     }
+
+    const handleBriefing = (data: Array<baseType>) => {
+      state.briefingList = data
+      state.activeBriefing = data[0]
+    }
+
+    /* *****************************************    趋势图逻辑    **************************************************/
+    /* *****************************************    趋势图逻辑    **************************************************/
+    /* *****************************************    趋势图逻辑    **************************************************/
 
     const handleChange = (value: string) => {
       console.log(`selected ${value}`)
@@ -150,10 +240,44 @@ export default defineComponent({
       state.trendOption = { option }
     }
 
+    /* *****************************************    速报逻辑    **************************************************/
+    /* *****************************************    速报逻辑    **************************************************/
+    /* *****************************************    速报逻辑    **************************************************/
+
+    const changeBriefing = (data: baseType) => {
+      console.log('切换城市速报事件 :>> ', data)
+      state.activeBriefing = data
+    }
+
+    const changeBriefingTab = (data: baseType) => {
+      console.log('切换城市速报 tab :>> ', data)
+      const option = lineOption(
+        getOptionValue('date', briefingEchartData),
+        undefined,
+        getOptionValue(data.key, briefingEchartData, data.remark)
+      )
+      state.briefingtab = data
+      state.briefingOption = { option }
+    }
+
+    const queryCityBriefing = async (adcode: string) => {
+      console.log('城市速报查询 :>> ', adcode)
+      const res = await connection('/query/pubished/daily/list', 'get', {
+        params: {
+          limit: 30,
+          adCode: adcode
+        }
+      })
+      console.log('城市速报查询 结果 :>> ', res)
+      briefingEchartData = res.data
+    }
+
     return {
       ...toRefs(state),
       changeTrendTab,
-      handleChange
+      handleChange,
+      changeBriefing,
+      changeBriefingTab
     }
   }
 })
@@ -162,23 +286,24 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/style/var.less';
 
+.home {
+  padding: 0 36px;
+  > div {
+    margin-top: 10px;
+  }
+}
+
 .localToday {
-  padding: 10px 48px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   row-gap: 10px;
   column-gap: 10px;
 }
 .trend {
-  padding: 10px 48px;
   .trendTitle {
     display: flex;
     justify-content: space-between;
 
-    .title {
-      font-weight: bold;
-      font-size: 18px;
-    }
     .antdSelect {
       width: 118px;
       height: 30px;
@@ -192,22 +317,64 @@ export default defineComponent({
       }
     }
   }
-  .trendTabs {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+}
 
-    .trendTab {
-      padding: 8px 16px;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 4px;
-      background-color: rgba(153, 153, 153, 0.1);
+.trendTabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .trendTab {
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 4px;
+    background-color: rgba(153, 153, 153, 0.1);
+    cursor: pointer;
+    margin: 0 8px;
+    text-align: center;
+  }
+  .activeTrendTab {
+    border: 1px solid @defaultBlue;
+    color: @defaultBlue;
+    background-color: lighten(@defaultBlue, 45%);
+  }
+}
+
+.briefing {
+  table {
+    width: 100%;
+    margin-top: 16px;
+
+    thead {
+      th {
+        height: 86px;
+        text-align: center;
+        font-size: 24px;
+        padding: 0 6px;
+      }
     }
-    .activeTrendTab {
-      border: 1px solid @defaultBlue;
-      color: @defaultBlue;
-      background-color: lighten(@defaultBlue, 45%);
+    tbody {
+      th {
+        height: 64px;
+        text-align: center;
+        font-size: 24px;
+        &:first-child {
+          text-align: left;
+          padding-left: 10px;
+        }
+        &:last-child {
+          font-size: 18px;
+        }
+      }
+    }
+    .activeBriefing {
+      background-color: #e5f3ff;
+    }
+
+    .briefingEchart {
+      padding-top: 18px;
+      padding-bottom: 18px;
     }
   }
 }
