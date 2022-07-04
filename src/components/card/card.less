@@ -15,8 +15,14 @@
     font-size: @card-defaultSize;
     line-height: 1.5;
     white-space: nowrap;
+    p {
+      margin: 0;
+      &:first-child {
+        font-size: @card-defaultSize * 0.75;
+      }
+    }
 
-    p:first-child {
+    #value {
       font-size: @card-defaultSize * 1.5;
     }
   }

@@ -1,4 +1,4 @@
-import { defineComponent, onBeforeMount, PropType, reactive, watch } from 'vue'
+import { defineComponent, onBeforeMount, PropType, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { NavItem, NavState } from './navBarTypes'
 
@@ -6,10 +6,11 @@ const props = { list: Array as PropType<Array<NavItem>> }
 
 const navDefineComponent = defineComponent({
   props,
-  setup(props) {
+  setup(props, { expose }) {
     const state = reactive<NavState>({
       path: ''
     })
+    const navRef = ref()
     const route = useRoute()
 
     onBeforeMount(() => {
@@ -22,8 +23,10 @@ const navDefineComponent = defineComponent({
         state.path = newPath
       }
     )
-
-    return { state }
+    expose({
+      navRef // 明确的暴露接口
+    })
+    return { state, navRef }
   }
 })
 

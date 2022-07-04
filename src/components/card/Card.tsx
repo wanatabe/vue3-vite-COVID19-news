@@ -19,7 +19,8 @@ const cardProps = {
       key: 'id',
       value: 'value'
     }
-  }
+  },
+  style: Object
 }
 
 export type CardProps = ExtractPropTypes<typeof cardProps>
@@ -27,19 +28,20 @@ export type CardProps = ExtractPropTypes<typeof cardProps>
 const card = defineComponent({
   name: 'VCard',
   props: cardProps,
-  setup(props, {slots}) {
+  setup(props, { slots }) {
     return () => {
-      const { add, cut, data, option } = props
+      const { add, cut, data, option, style } = props
       const { key, value } = option || {}
       return (
         <div class={['card']}>
           <div class={['subText']}>
-            <p>
-              {add && <span>+</span>}
-              {cut && <span>-</span>}
+            {slots && slots.default?.()}
+            <p id={'value'} style={{ ...style }}>
+              {add && data[value] && <span>+</span>}
+              {cut && data[value] && <span>-</span>}
               <span>{data[value]}</span>
             </p>
-            <p>{data[key]}</p>
+            <p class={'title'}>{data[key]}</p>
           </div>
         </div>
       )
