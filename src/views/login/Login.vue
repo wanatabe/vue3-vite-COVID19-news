@@ -9,7 +9,7 @@
 <script lang="ts">
 import { HTMLElementEvent } from 'pkg/input/Input'
 import { connection } from 'tool/axios'
-import { setLocal } from 'tool/localStory'
+import { getLocal, setLocal } from 'tool/localStory'
 import { defineComponent, getCurrentInstance, reactive, toRefs } from 'vue'
 import { LoginType } from './LoginType'
 
@@ -37,6 +37,8 @@ export default defineComponent({
     }
 
     const login = async () => {
+      const token = getLocal('token')
+      if (token) return console.log('无需重复登录')
       let data
       try {
         // 登录请求

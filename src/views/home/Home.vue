@@ -28,13 +28,20 @@
     <div class="briefing">
       <h2>国内31省市区本土疫情速报</h2>
       <table>
+        <colgroup>
+          <col style="width: 30%" />
+          <col style="width: 15%" />
+          <col style="width: 15%" />
+          <col style="width: 20%" />
+          <col style="width: 20%" />
+        </colgroup>
         <thead>
           <tr>
-            <th width="30%" :style="{ backgroundColor: '#f5f5f5' }">地区</th>
-            <th width="15%" :style="{ backgroundColor: 'linen', color: '#ff7140' }">本土<br />确诊</th>
-            <th width="15%" :style="{ backgroundColor: '#fef7ff', color: '#ca3f81' }">本土<br />无症状</th>
-            <th width="20%" :style="{ backgroundColor: '#fff7f7', color: '#f23a3b' }">风险地区<br />高|中</th>
-            <th width="20%" :style="{ backgroundColor: '#fffaf7' }">更新<br />时间</th>
+            <th :style="{ backgroundColor: '#f5f5f5' }">地区</th>
+            <th :style="{ backgroundColor: 'linen', color: '#ff7140' }">本土<br />确诊</th>
+            <th :style="{ backgroundColor: '#fef7ff', color: '#ca3f81' }">本土<br />无症状</th>
+            <th :style="{ backgroundColor: '#fff7f7', color: '#f23a3b' }">风险地区<br />高|中</th>
+            <th :style="{ backgroundColor: '#fffaf7' }">更新<br />时间</th>
           </tr>
         </thead>
         <tbody v-for="item in briefingList" :key="item.id">
@@ -74,6 +81,24 @@
       </div>
       <VEchart :option="mapOption" :mapConfig="mapConfig" height="500px" />
     </div>
+    <div class="citytable">
+      <h2>全国疫情数据（含港澳台）</h2>
+      <a-table :dataSource="dataSource" childrenColumnName="noChild" :columns="columns" @change="pageChange" :pagination="false">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'action' && record.adcode">
+            <span class="detailBtn" @click="clictToDetail(record)">
+              <svg t="1656923070136" class="icon" viewBox="0 0 1024 1024" version="1.1" p-id="2231" width="200" height="200">
+                <path
+                  d="M642.174 504.594c7.99 7.241 7.897 17.58-0.334 24.782L332.62 799.945c-8.867 7.759-9.766 21.236-2.007 30.103 7.758 8.867 21.236 9.766 30.103 2.007l309.221-270.569c27.429-24 27.792-64.127 0.89-88.507L360.992 192.192c-8.73-7.912-22.221-7.248-30.133 1.482-7.912 8.73-7.248 22.222 1.482 30.134l309.833 280.786z"
+                  fill=""
+                  p-id="2232"
+                ></path>
+              </svg>
+            </span>
+          </template>
+        </template>
+      </a-table>
+    </div>
   </div>
 </template>
 
@@ -85,6 +110,8 @@ import { defineComponent, nextTick, onMounted, reactive, toRefs, watch } from 'v
 import { HomeState } from './HomeType'
 import geoJson from '@/components/echarts/chinaGeoJson'
 import { getCityAllData, TreeType } from '@/utils/tree'
+import * as _ from 'lodash'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Home',
@@ -132,8 +159,62 @@ export default defineComponent({
         map: 'china',
         geoJson: geoJson
       },
-      mapTab: true
+      mapTab: true,
+      dataSource: [],
+      order: {
+        key: '新增确诊',
+        order: 'ascend'
+      },
+      columns: [
+        {
+          title: '地区',
+          dataIndex: 'name',
+          key: 'name',
+          width: '15%',
+          align: 'center'
+        },
+        {
+          title: '新增确诊',
+          dataIndex: ['today', 'confirm'],
+          key: ['today', 'confirm'],
+          sorter: (a: { today: { confirm: number } }, b: { today: { confirm: number } }) => a.today.confirm - b.today.confirm,
+          sortOrder: 'descend',
+          align: 'center'
+        },
+        {
+          title: '现有确诊',
+          dataIndex: ['total', 'nowConfirm'],
+          key: ['total', 'nowConfirm'],
+          sorter: (a: { total: { nowConfirm: number } }, b: { total: { nowConfirm: number } }) => a.total.nowConfirm - b.total.nowConfirm,
+          sortOrder: false,
+          align: 'center'
+        },
+        {
+          title: '累计确诊',
+          dataIndex: ['total', 'confirm'],
+          key: ['total', 'confirm'],
+          sorter: (a: { total: { confirm: number } }, b: { total: { confirm: number } }) => a.total.confirm - b.total.confirm,
+          sortOrder: false,
+          align: 'center'
+        },
+        {
+          title: '累计死亡',
+          dataIndex: ['total', 'dead'],
+          key: ['total', 'dead'],
+          sorter: (a: { total: { dead: number } }, b: { total: { dead: number } }) => a.total.dead - b.total.dead,
+          sortOrder: false,
+          align: 'center'
+        },
+        {
+          title: '详情',
+          key: 'action',
+          width: '12%',
+          align: 'center'
+        }
+      ]
     })
+
+    const router = useRouter()
 
     let trendData: baseType
     let briefingEchartData: Array<baseType>
@@ -151,6 +232,8 @@ export default defineComponent({
       ])
 
       treeData = localData.data.diseaseh5Shelf.areaTree
+      state.dataSource = treeData[0].children
+      console.log('dataSource :>> ', state)
 
       // 初始化渲染 今日疫情card
       handleTodayData(localData.data.diseaseh5Shelf.chinaTotal)
@@ -211,14 +294,9 @@ export default defineComponent({
       state.cardList = cardList
     }
 
-    const handleBriefing = (data: Array<baseType>) => {
-      state.briefingList = data
-      state.activeBriefing = data[0]
-    }
-
-    /* *****************************************    趋势图逻辑    **************************************************/
-    /* *****************************************    趋势图逻辑    **************************************************/
-    /* *****************************************    趋势图逻辑    **************************************************/
+    /* *****************************************    全国新增本土确诊趋势图    **************************************************/
+    /* *****************************************    全国新增本土确诊趋势图    **************************************************/
+    /* *****************************************    全国新增本土确诊趋势图    **************************************************/
 
     const handleChange = (value: string) => {
       console.log(`selected ${value}`)
@@ -258,9 +336,14 @@ export default defineComponent({
       state.trendOption = { option }
     }
 
-    /* *****************************************    速报逻辑    **************************************************/
-    /* *****************************************    速报逻辑    **************************************************/
-    /* *****************************************    速报逻辑    **************************************************/
+    /* *****************************************    疫情速报    **************************************************/
+    /* *****************************************    疫情速报    **************************************************/
+    /* *****************************************    疫情速报    **************************************************/
+
+    const handleBriefing = (data: Array<baseType>) => {
+      state.briefingList = data
+      state.activeBriefing = data[0]
+    }
 
     const changeBriefing = (data: baseType) => {
       console.log('切换城市速报事件 :>> ', data)
@@ -290,6 +373,10 @@ export default defineComponent({
       briefingEchartData = res.data
     }
 
+    /* *****************************************    全国疫情分布    **************************************************/
+    /* *****************************************    全国疫情分布    **************************************************/
+    /* *****************************************    全国疫情分布    **************************************************/
+
     const changeMapTab = (isToday = true) => {
       state.mapTab = isToday
     }
@@ -299,7 +386,31 @@ export default defineComponent({
       const treenode = getCityAllData('中国', treeData, isToday)
       const mapOption = getMapOption('china', treenode)
       state.mapOption = { option: mapOption }
-      console.log('state.mapOption :>> ', state.mapOption)
+    }
+
+    /* *****************************************    全国疫情数据    **************************************************/
+    /* *****************************************    全国疫情数据    **************************************************/
+    /* *****************************************    全国疫情数据    **************************************************/
+
+    // change事件绑定的函数
+    const pageChange = (page: any, filters: any, sorter: { columnKey: any; order: any }) => {
+      const newColumns = state.columns.map((item: any) => {
+        _.isEqual(item.dataIndex, sorter.columnKey) ? (item.sortOrder = sorter.order) : (item.sortOrder = false)
+        return item
+      })
+      state.columns = newColumns
+    }
+
+    /**
+     * 跳转到对应城市详情页
+     * @param record
+     */
+    const clictToDetail = (record: any) => {
+      const { name, adcode } = record
+      router.push({
+        name: 'city',
+        params: { name, adcode }
+      })
     }
 
     return {
@@ -308,7 +419,9 @@ export default defineComponent({
       handleChange,
       changeBriefing,
       changeBriefingTab,
-      changeMapTab
+      changeMapTab,
+      pageChange,
+      clictToDetail
     }
   }
 })
@@ -321,6 +434,9 @@ export default defineComponent({
   padding: 0 36px;
   > div {
     margin-top: 10px;
+  }
+  h2 {
+    font-weight: bold !important;
   }
 }
 
@@ -413,6 +529,35 @@ export default defineComponent({
   .trendTabs {
     justify-content: start;
     margin: 16px 0;
+  }
+}
+.citytable {
+  :deep(table) {
+    .ant-table-thead > tr > th {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .ant-table-tbody > tr > td {
+      font-size: 16px;
+      &:first-child {
+        color: @defaultBlue;
+      }
+    }
+  }
+  .detailBtn {
+    width: 26px;
+    display: flex;
+    margin: 0 auto;
+    > svg {
+      height: 100%;
+      width: 100%;
+      cursor: pointer;
+      &:hover {
+        path {
+          fill: @defaultBlue;
+        }
+      }
+    }
   }
 }
 </style>

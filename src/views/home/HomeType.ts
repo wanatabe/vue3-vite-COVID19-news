@@ -26,6 +26,12 @@ export interface HomeState {
   mapTab?: boolean
   mapOption?: any
   mapConfig?: any
+  dataSource?: any[]
+  order?: {
+    key: string
+    order: 'ascend' | 'descend' | false
+  }
+  columns: any
 }
 
 export interface ListItem {

@@ -4,9 +4,9 @@ import App from './App.vue'
 import { router } from 'route/router'
 import './assets/public.css'
 import 'pkg/index.less'
-import 'ant-design-vue/lib/select/style/index.css'
+import 'ant-design-vue/dist/antd.css'
 import { Button, Card, Echart, Input } from 'pkg/index.'
-import { Select } from 'ant-design-vue'
+import { ConfigProvider, Select, Table } from 'ant-design-vue'
 
 const app = createApp(App)
 
@@ -17,6 +17,8 @@ app.use(Input)
 app.use(Card)
 app.use(Echart)
 app.use(Select)
+app.use(Table)
+app.use(ConfigProvider)
 
 /**
  * 设置全局变量

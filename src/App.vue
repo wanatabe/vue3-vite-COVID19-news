@@ -1,10 +1,12 @@
 <template>
-  <div id="cantianer">
-    <NavBar :list="state.list"></NavBar>
-    <div class="routeView">
-      <router-view @getList="getList"></router-view>
+  <a-config-provider :locale="state.locale">
+    <div id="cantianer">
+      <NavBar :list="state.list"></NavBar>
+      <div class="routeView">
+        <router-view @getList="getList"></router-view>
+      </div>
     </div>
-  </div>
+  </a-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -12,9 +14,11 @@ import NavBar from 'pkg/navBar/NavBar.vue'
 import { getLocal } from 'tool/localStory'
 import { onMounted, reactive } from 'vue'
 import { AppState } from './appType'
+import zhCN from 'ant-design-vue/es/locale/zh_CN'
 
 const state = reactive<AppState>({
-  list: []
+  list: [],
+  locale: zhCN
 })
 onMounted(() => {
   const isLogin = getLocal('token')
@@ -26,15 +30,11 @@ const getList = async (isLogin?: Boolean) => {
   const data = [
     { id: 1, text: '国内疫情', to: '/' },
     { id: 2, text: '国外疫情', to: '/abroad' },
-    { id: 3, text: '新闻', to: '/news' },
-    { id: 4, text: '我的', to: '/login' }
+    { id: 3, text: '我的', to: '/me' }
   ]
 
-  if (!isLogin) {
-    data.splice(
-      data.findIndex((item) => item.to === '/news'),
-      1
-    )
+  if (isLogin) {
+    data.splice(1, 0, { id: 4, text: '疫情', to: '/city' })
   }
   state.list = data
 }
