@@ -115,7 +115,7 @@ import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Home',
-  setup() {
+  setup(props, { emit }) {
     const state = reactive<HomeState>({
       cardList: [
         { id: 1, name: '本土确诊', key: 'localConfirmAdd', add: true },
@@ -243,6 +243,9 @@ export default defineComponent({
       state.activeTrend && changeTrendTab(state.activeTrend)
       state.briefingtab && changeBriefingTab(state.briefingtab)
       renderMap()
+      nextTick(() => {
+        emit('mounted')
+      })
     })
 
     watch(

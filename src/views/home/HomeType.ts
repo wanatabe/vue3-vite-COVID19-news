@@ -34,13 +34,14 @@ export interface HomeState {
   columns: any
 }
 
-export interface ListItem {
+export interface ListItem extends baseType {
   id: number | string
   name: string
   key: string
   value?: string
   add?: boolean
   reduce?: boolean
+  extra?: baseType
 }
 
 export enum KeyValue {

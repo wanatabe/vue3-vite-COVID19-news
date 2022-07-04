@@ -3,11 +3,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, nextTick, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'me',
-  setup() {
+  setup(props, { emit }) {
+    onMounted(() => {
+      nextTick(() => {
+        emit('mounted')
+      })
+    })
     return {}
   }
 })
