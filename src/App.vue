@@ -3,7 +3,7 @@
     <div id="cantianer" ref="cantianerRef">
       <NavBar :list="state.list" ref="navRef"></NavBar>
       <div class="routeView" ref="viewRef">
-        <router-view @getList="getList" @mounted="changeShow"></router-view>
+        <router-view @toDetail="changeCity" @mounted="changeShow"></router-view>
       </div>
       <div id="toolBar" v-if="state.showBar">
         <div class="top" @click="scroolTop">
@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import NavBar from 'pkg/navBar/NavBar.vue'
-import { getLocal } from 'tool/localStory'
 import { onMounted, reactive, watch } from 'vue'
 import { AppState } from './appType'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
@@ -44,39 +43,42 @@ const state = reactive<AppState>({
   showBar: false
 })
 onMounted(() => {
-  const isLogin = getLocal('token')
-  getList(!!isLogin)
+  getList()
 })
 
 const changeShow = () => {
-  console.log('nav height :>> ', navRef.value.navRef, navRef.value.navRef.clientHeight)
-  console.log('view height :>> ', viewRef.value, viewRef.value.clientHeight)
-  console.log('body height :>> ', document.body, document.body.clientHeight)
+  // console.log('nav height :>> ', navRef.value.navRef, navRef.value.navRef.clientHeight)
+  // console.log('view height :>> ', viewRef.value, viewRef.value.clientHeight)
+  // console.log('body height :>> ', document.body, document.body.clientHeight)
   state.showBar = navRef.value.navRef.clientHeight + viewRef.value.clientHeight >= document.body.clientHeight
 }
 
 watch(
   () => route.path,
   (newPath: string, oldPath: string) => {
-    console.log('newPath,oldPath :>> ', newPath, oldPath)
+    // console.log('newPath,oldPath :>> ', newPath, oldPath)
     if (newPath !== oldPath) {
       state.showBar = false
     }
   }
 )
 
-const getList = async (isLogin?: Boolean) => {
-  console.log('父组件方法getList :>> ', isLogin)
+const getList = async () => {
   const data = [
     { id: 1, text: '国内疫情', to: '/home' },
     { id: 2, text: '国外疫情', to: '/abroad' },
     { id: 3, text: '我的', to: '/me' }
   ]
 
-  if (isLogin) {
-    data.splice(1, 0, { id: 4, text: '疫情', to: '/city' })
-  }
   state.list = data
+}
+
+const changeCity = (params: any) => {
+  const menu = { id: params.adcode, text: params.name + '疫情', to: '/city' }
+  if (state.list) {
+    let end = state.list.length > 3 ? 1 : 0
+    state.list.splice(1, end, menu)
+  }
 }
 
 /**

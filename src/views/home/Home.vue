@@ -112,6 +112,7 @@ import geoJson from '@/components/echarts/chinaGeoJson'
 import { getCityAllData, TreeType } from '@/utils/tree'
 import * as _ from 'lodash'
 import { useRouter } from 'vue-router'
+import ObjectUtil from '@/utils/object'
 
 export default defineComponent({
   name: 'Home',
@@ -292,7 +293,7 @@ export default defineComponent({
       const { cardList = [] } = state
       for (let index = 0; index < cardList.length; index++) {
         const item = cardList[index]
-        item.value = data[item.key]
+        item.value = ObjectUtil.getValue(item.key, data)
       }
       state.cardList = cardList
     }
@@ -410,9 +411,11 @@ export default defineComponent({
      */
     const clictToDetail = (record: any) => {
       const { name, adcode } = record
+      emit('toDetail', record)
+
       router.push({
         name: 'city',
-        params: { name, adcode }
+        params: { name, adcode, data: JSON.stringify(record) }
       })
     }
 

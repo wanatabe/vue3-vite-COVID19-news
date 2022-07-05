@@ -31,13 +31,13 @@ export interface HomeState {
     key: string
     order: 'ascend' | 'descend' | false
   }
-  columns: any
+  columns?: any
 }
 
 export interface ListItem extends baseType {
   id: number | string
   name: string
-  key: string
+  key: string | string[]
   value?: string
   add?: boolean
   reduce?: boolean
