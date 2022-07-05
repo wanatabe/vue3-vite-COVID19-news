@@ -3,7 +3,13 @@
     <div id="cantianer" ref="cantianerRef">
       <NavBar :list="state.list" ref="navRef"></NavBar>
       <div class="routeView" ref="viewRef">
-        <router-view @toDetail="changeCity" @mounted="changeShow"></router-view>
+        <router-view v-slot="{ Component }" @toDetail="changeCity" @mounted="changeShow">
+          <transition>
+            <keep-alive>
+              <component :is="Component" />
+            </keep-alive>
+          </transition>
+        </router-view>
       </div>
       <div id="toolBar" v-if="state.showBar">
         <div class="top" @click="scroolTop">
