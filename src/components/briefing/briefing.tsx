@@ -35,12 +35,10 @@ export const briefing = defineComponent({
     )
 
     const changeBriefing = (data: baseType) => {
-      console.log('切换城市速报事件 :>> ', data)
       state.activeBriefing = ObjectUtil.cloneDeep(data)
     }
 
     return () => {
-      console.log('props 速报----------:>> ', props, state)
       return (
         <div class='briefing'>
           <h2>本土疫情速报</h2>

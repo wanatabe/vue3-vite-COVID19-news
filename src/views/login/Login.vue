@@ -32,7 +32,6 @@ export default defineComponent({
     const changeRequest = (key: 'name' | 'psw', e: HTMLElementEvent<HTMLInputElement>): void => {
       let request = state.request
       if (!request) request = {}
-      console.log('e :>> ', key, e.target.value)
       request[key] = e.target.value || ''
 
       state.request = request
@@ -57,7 +56,6 @@ export default defineComponent({
         // 设置全局变量
         if (internalInstance) {
           const globalState = internalInstance.appContext.config.globalProperties.$globalState
-          console.log('globalState :>> ', globalState)
           globalState.set('isLogin', true)
         }
         // 通知父组件

@@ -81,7 +81,6 @@ export default defineComponent({
       const { WomAboard, WomWorld } = data
       state.countryData = WomAboard
       handleCardData(WomWorld)
-      console.log('state.cardList :>> ', state.cardList)
       nextTick(() => {
         emit('mounted')
       })
@@ -106,7 +105,6 @@ export default defineComponent({
           modules: 'FAutoCountryConfirmAdd,WomWorld,WomAboard'
         }
       })
-      console.log('queryAbroad :>> ', data)
       return data.data
     }
 

@@ -33,7 +33,6 @@ export const trend = defineComponent({
     })
 
     onMounted(async () => {
-      console.log('trend onMounted :>> ', props.treeData)
       await queryTrend(state.limitTrend?.key)
       changeTrendTab(state.activeTrend)
     })
@@ -58,7 +57,6 @@ export const trend = defineComponent({
     )
 
     const handleChange = (value: string) => {
-      console.log(`selected ${value}`)
       const data = state.limitTrends?.find((item) => item.key === value)
       if (data) {
         state.limitTrend = data
@@ -95,7 +93,6 @@ export const trend = defineComponent({
     }
 
     return () => {
-      console.log('props :>> ', props, state)
       return (
         <div class='trend'>
           <div class='trendTitle'>

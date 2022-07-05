@@ -234,7 +234,6 @@ export default defineComponent({
 
       treeData = localData.data.diseaseh5Shelf.areaTree
       state.dataSource = treeData[0].children
-      console.log('dataSource :>> ', state)
 
       // 初始化渲染 今日疫情card
       handleTodayData(localData.data.diseaseh5Shelf.chinaTotal)
@@ -303,7 +302,6 @@ export default defineComponent({
     /* *****************************************    全国新增本土确诊趋势图    **************************************************/
 
     const handleChange = (value: string) => {
-      console.log(`selected ${value}`)
       const data = state.limitTrends?.find((item) => item.key === value)
       state.limitTrend = data
     }
@@ -350,12 +348,10 @@ export default defineComponent({
     }
 
     const changeBriefing = (data: baseType) => {
-      console.log('切换城市速报事件 :>> ', data)
       state.activeBriefing = data
     }
 
     const changeBriefingTab = (data: baseType) => {
-      console.log('切换城市速报 tab :>> ', data)
       const option = lineOption(
         getOptionValue('date', briefingEchartData),
         undefined,
@@ -366,14 +362,12 @@ export default defineComponent({
     }
 
     const queryCityBriefing = async (adcode: string) => {
-      console.log('城市速报查询 :>> ', adcode)
       const res = await connection('/query/pubished/daily/list', 'get', {
         params: {
           limit: 30,
           adCode: adcode
         }
       })
-      console.log('城市速报查询 结果 :>> ', res)
       briefingEchartData = res.data
     }
 

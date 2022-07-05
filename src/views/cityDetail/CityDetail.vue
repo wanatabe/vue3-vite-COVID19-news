@@ -11,7 +11,7 @@
 <script lang="ts">
 import { baseType } from '@/appType'
 import ObjectUtil from '@/utils/object'
-import { defineComponent, nextTick, onMounted, toRefs, reactive } from 'vue'
+import { defineComponent, nextTick, onMounted, toRefs, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { CityState } from './cityType'
 
@@ -46,17 +46,28 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      console.log('route :>> ', route.params)
       const { adcode, data } = route.params
       if (adcode && data && typeof data === 'string') {
         state.treeData = JSON.parse(data)
-        console.log('treedata :>> ', state.treeData)
       }
       state.treeData && handleTodayData(state.treeData)
       nextTick(() => {
         emit('mounted')
       })
     })
+
+    watch(
+      () => route.params,
+      (newData, oldData) => {
+        if (newData !== oldData) {
+          if (newData && typeof newData.data === 'string') {
+            state.treeData = JSON.parse(newData.data)
+
+            state.treeData && handleTodayData(state.treeData)
+          }
+        }
+      }
+    )
 
     const handleTodayData = (data: baseType) => {
       const { cardList = [] } = state

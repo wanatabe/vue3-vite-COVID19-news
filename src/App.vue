@@ -12,7 +12,7 @@
         </router-view>
       </div>
       <div id="toolBar" v-if="state.showBar">
-        <div class="top" @click="scroolTop">
+        <div class="top" @click="scroolTop(true)">
           <svg
             t="1656939504509"
             class="icon"
@@ -62,9 +62,10 @@ const changeShow = () => {
 watch(
   () => route.path,
   (newPath: string, oldPath: string) => {
-    // console.log('newPath,oldPath :>> ', newPath, oldPath)
+    console.log('newPath,oldPath :>> ', newPath, oldPath)
     if (newPath !== oldPath) {
-      state.showBar = false
+      changeShow()
+      scroolTop(false)
     }
   }
 )
@@ -90,14 +91,18 @@ const changeCity = (params: any) => {
 /**
  * 滚动回顶部
  */
-const scroolTop = () => {
+const scroolTop = (interval = true) => {
   let top = cantianerRef.value.scrollTop //获取点击时页面的滚动条纵坐标位置
-  const timeTop = setInterval(() => {
-    cantianerRef.value.scrollTop = top -= 50 //一次减50往上滑动
-    if (top <= 0) {
-      clearInterval(timeTop)
-    }
-  }, 5)
+  if (interval) {
+    const timeTop = setInterval(() => {
+      cantianerRef.value.scrollTop = top -= 50 //一次减50往上滑动
+      if (top <= 0) {
+        clearInterval(timeTop)
+      }
+    }, 5)
+  } else {
+    cantianerRef.value.scrollTop = 0
+  }
 }
 </script>
 

@@ -37,8 +37,8 @@ export const card = defineComponent({
           <div class={['subText']}>
             {slots && slots.default?.()}
             <p id={'value'} style={{ ...style }}>
-              {add && data[value] && <span>+</span>}
-              {cut && data[value] && <span>-</span>}
+              {add && data[value] ? <span>+</span> : null}
+              {cut && data[value] ? <span>-</span> : null}
               <span>{data[value]}</span>
             </p>
             <p class={'title'}>{data[key]}</p>
