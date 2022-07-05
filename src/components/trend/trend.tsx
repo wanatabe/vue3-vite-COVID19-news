@@ -15,6 +15,7 @@ const trendProps = {
     type: Array as PropType<baseType[]>,
     default: []
   },
+  limitTrends: Array as PropType<baseType[]>,
   treeData: Object
 }
 
@@ -25,14 +26,8 @@ export const trend = defineComponent({
     const state = reactive<TrendState>({
       trendTabs: props.trendTabs,
       activeTrend: props.trendTabs[0],
-      limitTrends: [
-        { key: 30, value: '近30天' },
-        { key: 60, value: '近60天' },
-        { key: 90, value: '近90天' },
-        { key: 182, value: '近半年' },
-        { key: 365, value: '近一年' }
-      ],
-      limitTrend: { key: 30, value: '近30天' },
+      limitTrends: props.limitTrends,
+      limitTrend: props.limitTrends && props.limitTrends[0],
       trendOption: { option: {} },
       trendData: []
     })
@@ -47,7 +42,7 @@ export const trend = defineComponent({
         }
 
         if (newTree !== oleTree) {
-          state.limitTrend && (await queryTrend(state.limitTrend.key))
+          await queryTrend(state.limitTrend?.key)
           changeTrendTab(state.activeTrend)
         }
       },
@@ -68,7 +63,7 @@ export const trend = defineComponent({
      * 查询趋势图数据
      * @param limit 限制时间
      */
-    const queryTrend = async (limit: string | number) => {
+    const queryTrend = async (limit: string | number = 30) => {
       if (props.treeData?.adcode) {
         const trendRes = await connection('query/pubished/daily/list', 'get', {
           params: {
@@ -84,7 +79,7 @@ export const trend = defineComponent({
     /**
      * 切换趋势图内容
      */
-    const changeTrendTab = (param: baseType): void => {
+    const changeTrendTab = (param?: baseType): void => {
       if (!state.trendData) return
       let data = state.trendData
 
@@ -103,16 +98,18 @@ export const trend = defineComponent({
                 state.activeTrend && state.activeTrend.value ? state.activeTrend.value : ''
               }趋势图`}
             </h2>
-            <a-select onChange={handleChange} class='antdSelect' defaultValue={state.limitTrend && state.limitTrend.value}>
-              {state.limitTrends &&
-                state.limitTrends.map((item) => {
-                  return (
-                    <a-select-option key={item.key} value={item.key}>
-                      {item.value}
-                    </a-select-option>
-                  )
-                })}
-            </a-select>
+            {props.limitTrends ? (
+              <a-select onChange={handleChange} class='antdSelect' defaultValue={state.limitTrend && state.limitTrend.value}>
+                {props.limitTrends &&
+                  props.limitTrends.map((item) => {
+                    return (
+                      <a-select-option key={item.key} value={item.key}>
+                        {item.value}
+                      </a-select-option>
+                    )
+                  })}
+              </a-select>
+            ) : null}
           </div>
           <VEcharts option={state.trendOption as any} height='300px' />
           <div class='trendTabs'>
