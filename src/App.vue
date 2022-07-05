@@ -68,7 +68,7 @@ watch(
 const getList = async (isLogin?: Boolean) => {
   console.log('父组件方法getList :>> ', isLogin)
   const data = [
-    { id: 1, text: '国内疫情', to: '/' },
+    { id: 1, text: '国内疫情', to: '/home' },
     { id: 2, text: '国外疫情', to: '/abroad' },
     { id: 3, text: '我的', to: '/me' }
   ]

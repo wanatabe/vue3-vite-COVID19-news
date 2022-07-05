@@ -1,6 +1,6 @@
 <template>
   <nav class="nav" ref="navRef">
-    <router-link v-for="item in $props.list" :key="item.id" :to="item.to" :class="state.path === item.to && 'active'">
+    <router-link v-for="item in $props.list" :key="item.id" :to="item.to" :class="item.to && state.path.includes(item.to) && 'active'">
       {{ item.text }}
     </router-link>
   </nav>

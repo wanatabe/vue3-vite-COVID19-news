@@ -1,8 +1,10 @@
 <template>
   <div class="login">
-    <VInput class="input" @onInput="changeRequest('name', $event)" type="text" name="name" placeholder="请输入用户名"></VInput>
-    <VInput class="input" @onInput="changeRequest('psw', $event)" type="password" name="psw" placeholder="请输入密码"></VInput>
-    <VButton buttonClass="button" text="登录" @onClick="login"></VButton>
+    <div class="form">
+      <VInput class="input" @onInput="changeRequest('name', $event)" type="text" name="name" placeholder="请输入用户名"></VInput>
+      <VInput class="input" @onInput="changeRequest('psw', $event)" type="password" name="psw" placeholder="请输入密码"></VInput>
+      <VButton buttonClass="button" text="登录" @onClick="login"></VButton>
+    </div>
   </div>
 </template>
 
@@ -75,9 +77,19 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/style/var.less';
 .login {
-  display: flex;
-  flex-direction: column;
   padding: 16px 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  .form {
+    position: absolute;
+    top: 20%;
+    width: 100%;
+  }
 
   .input {
     width: 50%;

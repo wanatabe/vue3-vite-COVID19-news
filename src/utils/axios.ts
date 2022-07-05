@@ -20,7 +20,7 @@ instance.interceptors.request.use(
       config.baseURL = me_baseURL
       const token = config.headers?.token || getLocal('token')
       if (!token && !config.url?.endsWith('/login') && !config.url?.includes('list')) {
-        router.push({ name: 'login' })
+        router.push({ path: 'login' })
         return Promise.reject({ msg: '未登录' })
       }
     }
