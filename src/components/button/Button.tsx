@@ -9,13 +9,13 @@ const buttonProps = {
 
 export type ButtonProps = ExtractPropTypes<typeof buttonProps>
 
-const button = defineComponent({
+export const button = defineComponent({
   name: 'VButton',
   props: buttonProps,
   setup(props, { emit }) {
     /** 点击事件 */
     const click = (e: MouseEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       emit('onClick', e)
     }
     return () => {

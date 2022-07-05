@@ -25,7 +25,7 @@ const cardProps = {
 
 export type CardProps = ExtractPropTypes<typeof cardProps>
 
-const card = defineComponent({
+export const card = defineComponent({
   name: 'VCard',
   props: cardProps,
   setup(props, { slots }) {

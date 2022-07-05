@@ -13,9 +13,10 @@ export type Install<T> = T & {
 } & EventShim
 
 export function install<T>(options: T) {
-  (options as Record<string, unknown>).install = (app: App) => {
+  ;(options as Record<string, unknown>).install = (app: App) => {
     const { name } = options as unknown as { name: string }
     app.component(name, options)
+    app.component('v-' + name, options)
   }
 
   return options as Install<T>

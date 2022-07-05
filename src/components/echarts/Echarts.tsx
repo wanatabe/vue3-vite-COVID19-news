@@ -66,4 +66,5 @@ const echart = defineComponent({
   }
 })
 const Echart = install(echart)
+export const VEcharts = echart
 export default Echart

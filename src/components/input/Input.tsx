@@ -26,7 +26,7 @@ const inputProps = () => ({
 
 export type InputProps = ExtractPropTypes<typeof inputProps>
 
-const input = defineComponent({
+export const input = defineComponent({
   name: 'VInput',
   props: inputProps(),
 
