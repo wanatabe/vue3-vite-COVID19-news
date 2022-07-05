@@ -1,7 +1,10 @@
 import { baseType } from '@/appType'
 import { TreeType } from '@/utils/tree'
-import { HomeState } from '../home/HomeType'
 
-export interface CityState extends HomeState {
-  treeData?: Array<TreeType>
+export interface CityState {
+  treeData?: TreeType
+  cardList?: baseType[]
+  trendTabs?: baseType[]
+  limitTrends?: baseType[]
+  briefingList?: baseType[]
 }

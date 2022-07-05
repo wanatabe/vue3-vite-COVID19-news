@@ -32,6 +32,12 @@ export const trend = defineComponent({
       trendData: []
     })
 
+    onMounted(async () => {
+      console.log('trend onMounted :>> ', props.treeData)
+      await queryTrend(state.limitTrend?.key)
+      changeTrendTab(state.activeTrend)
+    })
+
     watch(
       [() => state.limitTrend, () => props.treeData],
       async ([newData, newTree], [oldData, oleTree]) => {
