@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "start": "http-server dist -S -C cert.pem -s -g -p 8090"
+    "start": "http-server dist -S -C cert.pem -s -g -p 8090",
+    "ssl": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem"
   },
   "dependencies": {
     "ant-design-vue": "^3.2.9",
