@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "http-server dist -c-1 -s -p 8090"
   },
   "dependencies": {
     "ant-design-vue": "^3.2.9",
