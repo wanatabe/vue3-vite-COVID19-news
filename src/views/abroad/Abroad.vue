@@ -18,6 +18,7 @@
 <script lang="ts">
 import { baseType } from '@/appType'
 import { connection } from '@/utils/axios'
+import ObjectUtil from '@/utils/object'
 import { defineComponent, nextTick, onMounted, reactive, toRefs } from 'vue'
 import { AbroadState } from './abroadType'
 
@@ -90,7 +91,7 @@ export default defineComponent({
       const { cardList = [] } = state
       for (let index = 0; index < cardList.length; index++) {
         const item = cardList[index]
-        item.value = data[item.key]
+        item.value = ObjectUtil.getValue(item.key, data)
         if (item.extra && item.extra.key) {
           // const value = item.extra.key
           item.extra['value'] = data[item.extra.key]
