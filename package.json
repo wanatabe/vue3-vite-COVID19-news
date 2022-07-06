@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "start": "http-server dist -c-1 -s -g -p 8090"
+    "start": "http-server dist -s -g -p 8090"
   },
   "dependencies": {
     "ant-design-vue": "^3.2.9",
