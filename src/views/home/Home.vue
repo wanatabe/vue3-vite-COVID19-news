@@ -110,7 +110,7 @@ import { defineComponent, nextTick, onMounted, reactive, toRefs, watch } from 'v
 import { HomeState } from './HomeType'
 import geoJson from '@/components/echarts/chinaGeoJson'
 import { getCityAllData, TreeType } from '@/utils/tree'
-import * as _ from 'lodash'
+import { isEqual } from 'lodash'
 import { useRouter } from 'vue-router'
 import ObjectUtil from '@/utils/object'
 
@@ -393,7 +393,7 @@ export default defineComponent({
     // change事件绑定的函数
     const pageChange = (page: any, filters: any, sorter: { columnKey: any; order: any }) => {
       const newColumns = state.columns.map((item: any) => {
-        _.isEqual(item.dataIndex, sorter.columnKey) ? (item.sortOrder = sorter.order) : (item.sortOrder = false)
+        isEqual(item.dataIndex, sorter.columnKey) ? (item.sortOrder = sorter.order) : (item.sortOrder = false)
         return item
       })
       state.columns = newColumns
