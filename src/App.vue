@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import NavBar from 'pkg/navBar/NavBar.vue'
-import { onMounted, reactive, watch } from 'vue'
+import { nextTick, onMounted, reactive, watch } from 'vue'
 import { AppState } from './appType'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { ref } from 'vue'
@@ -64,8 +64,10 @@ watch(
   (newPath: string, oldPath: string) => {
     // console.log('newPath,oldPath :>> ', newPath, oldPath)
     if (newPath !== oldPath) {
-      changeShow()
-      scroolTop(false)
+      nextTick(() => {
+        changeShow()
+        scroolTop(false)
+      })
     }
   }
 )
