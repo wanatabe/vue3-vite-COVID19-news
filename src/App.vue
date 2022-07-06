@@ -62,7 +62,7 @@ const changeShow = () => {
 watch(
   () => route.path,
   (newPath: string, oldPath: string) => {
-    console.log('newPath,oldPath :>> ', newPath, oldPath)
+    // console.log('newPath,oldPath :>> ', newPath, oldPath)
     if (newPath !== oldPath) {
       changeShow()
       scroolTop(false)

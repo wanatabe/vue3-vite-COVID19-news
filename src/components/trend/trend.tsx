@@ -9,6 +9,7 @@ import { VEcharts } from '../echarts/Echarts'
 import { getOptionValue, lineOption } from '../echarts/echartUtil'
 import { install } from '../install'
 import { TrendState } from './trendType'
+import Select, { SelectValue } from 'ant-design-vue/lib/select'
 
 const trendProps = {
   trendTabs: {
@@ -56,7 +57,7 @@ export const trend = defineComponent({
       }
     )
 
-    const handleChange = (value: string) => {
+    const handleChange = (value: SelectValue) => {
       const data = state.limitTrends?.find((item) => item.key === value)
       if (data) {
         state.limitTrend = data
@@ -75,7 +76,7 @@ export const trend = defineComponent({
             limit
           }
         })
-        console.log('queryTrend result :>> ', trendRes)
+        // console.log('queryTrend result :>> ', trendRes)
         state.trendData = trendRes.data
       }
     }
@@ -102,16 +103,16 @@ export const trend = defineComponent({
               }趋势图`}
             </h2>
             {props.limitTrends ? (
-              <a-select onChange={handleChange} class='antdSelect' defaultValue={state.limitTrend && state.limitTrend.value}>
+              <Select onChange={(v) => handleChange(v)} class='antdSelect' defaultValue={state.limitTrend && state.limitTrend.value}>
                 {props.limitTrends &&
                   props.limitTrends.map((item) => {
                     return (
-                      <a-select-option key={item.key} value={item.key}>
+                      <Select.Option key={item.key} value={item.key}>
                         {item.value}
-                      </a-select-option>
+                      </Select.Option>
                     )
                   })}
-              </a-select>
+              </Select>
             ) : null}
           </div>
           <VEcharts option={state.trendOption as any} height='300px' />

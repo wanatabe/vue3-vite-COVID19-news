@@ -39,7 +39,7 @@ export default defineComponent({
 
     const login = async () => {
       const token = getLocal('token')
-      if (token) return console.log('无需重复登录')
+      if (token) return console.warn('无需重复登录')
       let data
       try {
         // 登录请求
