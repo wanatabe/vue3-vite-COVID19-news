@@ -111,35 +111,43 @@ const scroolTop = (interval = true) => {
 <style lang="less" scoped>
 @import 'src/style/var.less';
 
+@media only screen and (min-width: 768px) {
+  #cantianer {
+    width: 46.875rem;
+  }
+}
+
 #cantianer {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  width: 750px;
+  // width: 750px;
   height: inherit;
   margin: 0 auto;
   overflow-x: hidden;
   overflow-y: auto;
-  box-shadow: 0 1px 10px 1px #999;
+  box-shadow: 0 @sz1 @sz10 @sz1 #999;
   position: relative;
 
   #toolBar {
     position: sticky;
-    bottom: 48px;
+    bottom: 3rem;
     left: 100%;
-    width: 36px;
+    width: 2.25rem;
     > div {
-      width: 36px;
-      height: 36px;
-      border-radius: 4px;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: @sz4;
       display: flex;
       background-color: rgba(204, 204, 204, 0.5);
-      padding: 4px;
+      padding: @sz4;
       cursor: pointer;
-      &:hover {
-        background-color: lighten(@defaultBlue, 10%);
+      @media screen and (any-hover: hover) {
+        &:hover {
+          background-color: lighten(@defaultBlue, 10%);
+        }
       }
     }
     svg {

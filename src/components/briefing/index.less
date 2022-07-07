@@ -4,27 +4,27 @@
   }
   table {
     width: 100%;
-    margin-top: 16px;
+    margin-top: @sz16;
 
     thead {
       th {
-        height: 86px;
+        height: 5.375rem;
         text-align: center;
-        font-size: 24px;
-        padding: 0 6px;
+        font-size: 1.5rem;
+        padding: 0 @sz6;
       }
     }
     tbody {
       th {
         height: 64px;
         text-align: center;
-        font-size: 24px;
+        font-size: 1.5rem;
         &:first-child {
           text-align: left;
-          padding-left: 10px;
+          padding-left: @sz10;
         }
         &:last-child {
-          font-size: 18px;
+          font-size: @sz18;
         }
       }
     }
@@ -33,8 +33,8 @@
     }
 
     .briefingEchart {
-      padding-top: 18px;
-      padding-bottom: 18px;
+      padding-top: @sz18;
+      padding-bottom: @sz18;
     }
   }
 }

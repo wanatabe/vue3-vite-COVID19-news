@@ -13,15 +13,22 @@ export default navDefineComponent
 
 <style lang="less" scoped>
 @import 'src/style/var.less';
+
+@media screen and (max-width: 767px) {
+  .nav {
+    margin-top: @sz4;
+  }
+}
 .nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 56px;
+  height: @sz56;
+  padding: @sz30 0;
+  margin-bottom: @sz24;
   background-color: rgba(255, 255, 255, 0.7);
-  font-size: 22px;
-  margin-bottom: 24px;
-  box-shadow: 1px 0 10px 0px #ccc;
+  font-size: @sz22;
+  box-shadow: @sz1 0 @sz10 0 #ccc;
   position: sticky;
   top: 0;
   z-index: 99;

@@ -12,7 +12,7 @@
           </a-select-option>
         </a-select>
       </div>
-      <VEchart :option="trendOption" height="300px" />
+      <VEchart :option="trendOption" height="18.75rem" />
       <div class="trendTabs">
         <div
           :class="['trendTab', activeTrend && activeTrend.key === item.key && 'activeTrendTab']"
@@ -56,7 +56,7 @@
             <th class="briefingEchart" v-if="activeBriefing && activeBriefing.adcode === item.adcode" colspan="5">
               <h2>{{ `${item.province}${briefingtab.value}` }}</h2>
 
-              <VEchart :option="briefingOption" height="300px" />
+              <VEchart :option="briefingOption" height="18.75rem" />
               <div class="trendTabs">
                 <div
                   :class="['trendTab', briefingtab && briefingtab.key === item.key && 'activeTrendTab']"
@@ -79,7 +79,7 @@
         <div :class="['trendTab', mapTab && 'activeTrendTab']" @click="changeMapTab()">新增确诊</div>
         <div :class="['trendTab', !mapTab && 'activeTrendTab']" @click="changeMapTab(false)">现有确诊</div>
       </div>
-      <VEchart :option="mapOption" :mapConfig="mapConfig" height="500px" />
+      <VEchart :option="mapOption" :mapConfig="mapConfig" height="31.25rem" />
     </div>
     <div class="citytable">
       <h2>全国疫情数据（含港澳台）</h2>
@@ -431,9 +431,9 @@ export default defineComponent({
 @import 'src/style/var.less';
 
 .home {
-  padding: 0 36px;
+  padding: 0 @sz30;
   > div {
-    margin-top: 10px;
+    margin-top: @sz10;
   }
   h2 {
     font-weight: bold !important;
@@ -443,8 +443,8 @@ export default defineComponent({
 .localToday {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  row-gap: 10px;
-  column-gap: 10px;
+  row-gap: @sz10;
+  column-gap: @sz10;
 }
 .trend {
   .trendTitle {
@@ -452,15 +452,20 @@ export default defineComponent({
     justify-content: space-between;
 
     .antdSelect {
-      width: 118px;
-      height: 30px;
+      width: 7.375rem;
+      height: @sz30;
       :deep(.ant-select-selector) {
         padding: 0;
         text-align: left;
 
         .ant-select-selection-item {
-          padding-left: 10px;
+          padding-left: @sz10;
         }
+      }
+    }
+    @media screen and (max-width: 767px) {
+      .antdSelect {
+        height: @sz48;
       }
     }
   }
@@ -472,17 +477,17 @@ export default defineComponent({
   justify-content: space-between;
 
   .trendTab {
-    padding: 8px 16px;
+    padding: @sz8 @sz16;
     font-weight: bold;
-    font-size: 18px;
-    border-radius: 4px;
+    font-size: @sz18;
+    border-radius: @sz4;
     background-color: rgba(153, 153, 153, 0.1);
     cursor: pointer;
-    margin: 0 8px;
+    margin: 0 @sz8;
     text-align: center;
   }
   .activeTrendTab {
-    border: 1px solid @defaultBlue;
+    border: @sz1 solid @defaultBlue;
     color: @defaultBlue;
     background-color: lighten(@defaultBlue, 45%);
   }
@@ -491,27 +496,27 @@ export default defineComponent({
 .briefing {
   table {
     width: 100%;
-    margin-top: 16px;
+    margin-top: @sz16;
 
     thead {
       th {
-        height: 86px;
+        height: 5.375rem;
         text-align: center;
-        font-size: 24px;
-        padding: 0 6px;
+        font-size: 1.5rem;
+        padding: 0 @sz6;
       }
     }
     tbody {
       th {
-        height: 64px;
+        height: 4rem;
         text-align: center;
-        font-size: 24px;
+        font-size: 1.5rem;
         &:first-child {
           text-align: left;
-          padding-left: 10px;
+          padding-left: @sz10;
         }
         &:last-child {
-          font-size: 18px;
+          font-size: @sz18;
         }
       }
     }
@@ -520,32 +525,32 @@ export default defineComponent({
     }
 
     .briefingEchart {
-      padding-top: 18px;
-      padding-bottom: 18px;
+      padding-top: @sz18;
+      padding-bottom: @sz18;
     }
   }
 }
 .mapEchart {
   .trendTabs {
     justify-content: start;
-    margin: 16px 0;
+    margin: @sz16 0;
   }
 }
 .citytable {
   :deep(table) {
     .ant-table-thead > tr > th {
-      font-size: 18px;
+      font-size: @sz18;
       font-weight: bold;
     }
     .ant-table-tbody > tr > td {
-      font-size: 16px;
+      font-size: @sz16;
       &:first-child {
         color: @defaultBlue;
       }
     }
   }
   .detailBtn {
-    width: 26px;
+    width: 1.625rem;
     display: flex;
     margin: 0 auto;
     > svg {

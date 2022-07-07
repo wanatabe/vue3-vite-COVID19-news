@@ -121,20 +121,20 @@ export default defineComponent({
 @import 'src/style/var.less';
 
 .abroad {
-  padding: 16px 48px;
+  padding: @sz16 @sz30;
   h2 {
     font-weight: bold;
   }
   .abroadTable {
-    margin-top: 16px;
+    margin-top: @sz16;
 
     :deep(table) {
       .ant-table-thead > tr > th {
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: bold;
       }
       .ant-table-tbody > tr > td {
-        font-size: 16px;
+        font-size: @sz16;
         &:first-child {
           color: @defaultBlue;
         }
@@ -145,7 +145,7 @@ export default defineComponent({
 .localToday {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  row-gap: 10px;
-  column-gap: 10px;
+  row-gap: @sz10;
+  column-gap: @sz10;
 }
 </style>

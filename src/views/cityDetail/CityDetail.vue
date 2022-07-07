@@ -86,10 +86,12 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import 'src/style/var.less';
+
 .city {
-  padding: 0 36px;
+  padding: 0 @sz30;
   > div {
-    margin-top: 10px;
+    margin-top: @sz10;
   }
   h2 {
     font-weight: bold !important;
@@ -99,7 +101,7 @@ export default defineComponent({
 .localToday {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  row-gap: 10px;
-  column-gap: 10px;
+  row-gap: @sz10;
+  column-gap: @sz10;
 }
 </style>

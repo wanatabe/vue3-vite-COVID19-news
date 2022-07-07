@@ -34,7 +34,7 @@ export const card = defineComponent({
       const { key, value } = option || {}
       return (
         <div class={['card']}>
-          <div class={['subText']}>
+          <div class={['subText']} title={data[value]}>
             {slots && slots.default?.()}
             <p id={'value'} style={{ ...style }}>
               {add && data[value] ? <span>+</span> : null}

@@ -9,14 +9,14 @@
     }
 
     .antdSelect {
-      width: 118px;
-      height: 30px;
+      width: 7.375rem;
+      height: @sz30;
       :deep(.ant-select-selector) {
         padding: 0;
         text-align: left;
 
         .ant-select-selection-item {
-          padding-left: 10px;
+          padding-left: @sz10;
         }
       }
     }
@@ -29,17 +29,17 @@
   justify-content: space-between;
 
   .trendTab {
-    padding: 8px 16px;
+    padding: @sz8 @sz16;
     font-weight: bold;
-    font-size: 18px;
-    border-radius: 4px;
+    font-size: @sz18;
+    border-radius: @sz4;
     background-color: rgba(153, 153, 153, 0.1);
     cursor: pointer;
-    margin: 0 8px;
+    margin: 0 @sz8;
     text-align: center;
   }
   .activeTrendTab {
-    border: 1px solid @defaultBlue;
+    border: @sz1 solid @defaultBlue;
     color: @defaultBlue;
     background-color: lighten(@defaultBlue, 45%);
   }

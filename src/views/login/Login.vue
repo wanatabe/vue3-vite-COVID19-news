@@ -75,7 +75,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import 'src/style/var.less';
 .login {
-  padding: 16px 8px;
+  padding: 1rem @sz8;
   position: absolute;
   top: 0;
   left: 0;
