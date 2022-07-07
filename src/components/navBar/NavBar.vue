@@ -24,7 +24,6 @@ export default navDefineComponent
   justify-content: space-around;
   align-items: center;
   height: @sz56;
-  padding: @sz30 0;
   margin-bottom: @sz24;
   background-color: rgba(255, 255, 255, 0.7);
   font-size: @sz22;

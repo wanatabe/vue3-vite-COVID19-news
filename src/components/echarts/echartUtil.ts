@@ -1,8 +1,8 @@
 function lineOption(xKey?: Array<string | number>, yKey?: Array<string | number>, value?: Array<string | number>): echarts.EChartsOption {
   const option: echarts.EChartsOption = {
     grid: {
-      top: '5%',
-      bottom: '5%'
+      top: '8%',
+      bottom: '28%'
     },
     xAxis: {
       type: 'category',
