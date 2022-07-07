@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, PropType, ref, watch } from 'vue'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import { install } from 'pkg/install'
 
@@ -48,6 +48,16 @@ const echart = defineComponent({
         echarts.registerMap(map, geoJson, specialAreas)
       }
       init(props.option)
+      window.addEventListener('resize', resize)
+    })
+
+    const resize = () => {
+      echart.value?.resize()
+    }
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resize)
+      echart.value?.dispose()
     })
 
     watch(

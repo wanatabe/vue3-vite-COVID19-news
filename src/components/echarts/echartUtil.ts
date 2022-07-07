@@ -1,9 +1,9 @@
 function lineOption(xKey?: Array<string | number>, yKey?: Array<string | number>, value?: Array<string | number>): echarts.EChartsOption {
   const option: echarts.EChartsOption = {
-    // grid: {
-    //   left: '5%',
-    //   right: '5%'
-    // },
+    grid: {
+      top: '5%',
+      bottom: '5%'
+    },
     xAxis: {
       type: 'category',
       boundaryGap: false,
@@ -32,6 +32,16 @@ function lineOption(xKey?: Array<string | number>, yKey?: Array<string | number>
     ]
   }
   return option
+}
+
+function scale() {
+  let bodyFontSize: number = parseFloat(window.getComputedStyle(document.body).fontSize) || 16
+  return bodyFontSize / 16
+}
+
+function size(sz: number) {
+  const sc = scale()
+  return sc * sz
 }
 
 function getOptionValue(key: string, data: any[] = [], remark?: string[]): Array<string | number> {
@@ -71,7 +81,8 @@ function getMapOption(mapName: string, data: any) {
       itemSymbol: 'rect',
       borderColor: '#fff',
       borderWidth: 1,
-      itemHeight: 24,
+      itemHeight: size(24),
+      itemWidth: size(12),
       splitNumber: 6,
       seriesIndex: [0]
     },
@@ -101,8 +112,8 @@ function getMapOption(mapName: string, data: any) {
             show: true
           }
         },
-        zoom: 1.35,
-        layoutCenter: ['50%', '70%'],
+        zoom: 1 + 0.35 * scale(),
+        layoutCenter: ['50%', `${70 - (30 - 30 * scale()) * scale()}%`],
         layoutSize: '100%',
         data: data
       }
