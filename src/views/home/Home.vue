@@ -110,7 +110,7 @@ import { defineComponent, nextTick, onMounted, reactive, toRefs, watch } from 'v
 import { HomeState } from './HomeType'
 import geoJson from '@/components/echarts/chinaGeoJson'
 import { getCityAllData, TreeType } from '@/utils/tree'
-import { isEqual } from 'lodash'
+import { default as isEqual } from 'lodash/isEqual'
 import { useRouter } from 'vue-router'
 import ObjectUtil from '@/utils/object'
 

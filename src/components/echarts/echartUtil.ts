@@ -1,5 +1,28 @@
-function lineOption(xKey?: Array<string | number>, yKey?: Array<string | number>, value?: Array<string | number>): echarts.EChartsOption {
-  const option: echarts.EChartsOption = {
+import * as echarts from 'echarts/core'
+import { LineSeriesOption, MapSeriesOption } from 'echarts/charts'
+import {
+  TooltipComponentOption,
+  GridComponentOption,
+  AxisPointerComponentOption,
+  DatasetComponentOption,
+  VisualMapComponentOption,
+  TitleComponentOption
+} from 'echarts/components'
+
+// 通过 ComposeOption 来组合出一个只有必须组件和图表的 Option 类型
+export type ECOption = echarts.ComposeOption<
+  | MapSeriesOption
+  | LineSeriesOption
+  | TitleComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | DatasetComponentOption
+  | VisualMapComponentOption
+  | AxisPointerComponentOption
+>
+
+function lineOption(xKey?: Array<string | number>, yKey?: Array<string | number>, value?: Array<string | number>): ECOption {
+  const option: ECOption = {
     grid: {
       top: '8%',
       bottom: '28%'
@@ -66,7 +89,7 @@ function getOptionValue(key: string, data: any[] = [], remark?: string[]): Array
 }
 
 function getMapOption(mapName: string, data: any) {
-  const option: echarts.EChartsOption = {
+  const option: ECOption = {
     visualMap: {
       type: 'piecewise',
       pieces: [

@@ -1,6 +1,32 @@
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
-import * as echarts from 'echarts'
+import * as echarts from 'echarts/core'
+import { LineChart, MapChart } from 'echarts/charts'
+import {
+  TooltipComponent,
+  GridComponent,
+  // 数据集组件
+  DatasetComponent,
+  VisualMapComponent,
+  // 内置数据转换器组件 (filter, sort)
+  TransformComponent
+} from 'echarts/components'
+import { CanvasRenderer, SVGRenderer } from 'echarts/renderers'
 import { install } from 'pkg/install'
+import { ECOption } from './echartUtil'
+
+echarts.use([
+  LineChart,
+  MapChart,
+  TooltipComponent,
+  GridComponent,
+  // 数据集组件
+  DatasetComponent,
+  // 内置数据转换器组件 (filter, sort)
+  TransformComponent,
+  VisualMapComponent,
+  SVGRenderer,
+  CanvasRenderer
+])
 
 const echartProps = {
   option: Object as PropType<InitConfigType>,
@@ -10,7 +36,7 @@ const echartProps = {
   mapConfig: Object as PropType<MapConfig>
 }
 export interface InitConfigType {
-  option: echarts.EChartsOption
+  option: ECOption
   notMerge?: boolean
   lazyUpdate?: boolean
 }
