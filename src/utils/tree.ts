@@ -13,7 +13,7 @@ export interface TreeType extends baseType {
  * @param treeData 数据源
  * @returns
  */
-export function getTreeNode(name: string, treeData: TreeType): any {
+export function getTreeNode(name: string, treeData: TreeType[]): any {
   for (let index = 0; index < treeData.length; index++) {
     const item = treeData[index]
     if (item.name && item.name.includes(name)) {
@@ -29,7 +29,7 @@ export function getTreeNode(name: string, treeData: TreeType): any {
   }
 }
 
-export function getCityAllData(name: string, treeData: TreeType, isToday = true) {
+export function getCityAllData(name: string, treeData: TreeType[], isToday = true) {
   const data = getTreeNode(name, treeData)
   if (!data.children) return
   let confirm = []
