@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
+import { defineComponent, onMounted, onUnmounted, PropType, shallowRef, watch } from 'vue'
 import * as echarts from 'echarts/core'
 import { LineChart, MapChart } from 'echarts/charts'
 import {
@@ -51,8 +51,8 @@ const echart = defineComponent({
   name: 'VEchart',
   props: echartProps,
   setup(props) {
-    const echartRef = ref<HTMLElement>()
-    const echart = ref<echarts.ECharts>()
+    let echartRef = shallowRef()
+    let echart = shallowRef()
 
     /**
      * 设置option
