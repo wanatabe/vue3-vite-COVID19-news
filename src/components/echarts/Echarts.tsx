@@ -51,6 +51,9 @@ const echart = defineComponent({
   name: 'VEchart',
   props: echartProps,
   setup(props) {
+    // const echartRef = ref<HTMLElement>()
+    // const echart = ref<echarts.ECharts>()
+    // 改ref为shollowRef，ref会导致Proxy应用到整个实例，严重影响实例底层运行
     let echartRef = shallowRef()
     let echart = shallowRef()
 

@@ -266,16 +266,20 @@ export default defineComponent({
         // 监听 地图tab变化
         if (newMapTab !== oldMapTab) {
           /**
-           * @todo
+           * @todo 该问题已解决
            * 期望： mapTab（地图控制按钮）变化后按钮的样式立刻渲染后，再触发map的渲染事件
            * 问题： 为什么使用nextTick无法实现目标？即使我把它放到mapTab的change事件中。比如在react中可以使用setState的第二个参数
            * 此处使用了setTimeout开启宏任务来解决，请问vue中有什么更优雅的方式？
+           *
+           * （https://github.com/apache/echarts/issues/13943）
+           * 解决：在echanrts组件（src\components\echarts\Echarts.tsx）中，使用ref储存echart实例及dom实例，导致Proxy应用到了整个实例，
+           * 严重影响了实例底层的运行，使用shallowRef（https://v3.cn.vuejs.org/api/refs-api.html#shallowref）替换
            */
-          setTimeout(() => {
-            renderMap(newMapTab)
-          })
-          // await nextTick(function () {
+          // setTimeout(() => {
           //   renderMap(newMapTab)
+          // })
+          // nextTick(function () {
+          renderMap(newMapTab)
           // })
         }
       },
