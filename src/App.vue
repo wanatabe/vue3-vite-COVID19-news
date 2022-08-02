@@ -38,6 +38,7 @@ import { AppState } from './appType'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { Publish } from './utils/communication'
 
 const navRef = ref()
 const viewRef = ref()
@@ -50,6 +51,9 @@ const state = reactive<AppState>({
 })
 onMounted(() => {
   getList()
+  Publish.subscribe('newpath', (data) => {
+    console.log('code,data---- :>> ', data, Publish.instance)
+  })
 })
 
 const changeShow = () => {

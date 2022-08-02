@@ -10,6 +10,7 @@ import { getOptionValue, lineOption } from '../echarts/echartUtil'
 import { install } from '../install'
 import { TrendState } from './trendType'
 import Select, { SelectValue } from 'ant-design-vue/lib/select'
+import { Publish } from '@/utils/communication'
 
 const trendProps = {
   trendTabs: {
@@ -36,6 +37,9 @@ export const trend = defineComponent({
     onMounted(async () => {
       await queryTrend(state.limitTrend?.key)
       changeTrendTab(state.activeTrend)
+      Publish.subscribe('newpath', (data: any) => {
+        console.log('趋势图数据订阅:>> ', data)
+      })
     })
 
     watch(

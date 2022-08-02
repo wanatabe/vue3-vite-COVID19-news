@@ -1,6 +1,7 @@
 import { defineComponent, onBeforeMount, PropType, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { NavItem, NavState } from './navBarTypes'
+import { Publish } from '../../utils/communication'
 
 const props = { list: Array as PropType<Array<NavItem>> }
 
@@ -21,6 +22,7 @@ const navDefineComponent = defineComponent({
       () => route.path,
       (newPath, oldPath) => {
         state.path = newPath
+        Publish.publish('newpath', newPath)
       }
     )
     expose({
